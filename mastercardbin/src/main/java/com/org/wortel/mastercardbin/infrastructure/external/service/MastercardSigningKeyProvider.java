@@ -12,13 +12,18 @@ import java.security.PrivateKey;
 public class MastercardSigningKeyProvider {
 
     private final MastercardProperties mastercardProperties;
+    private PrivateKey signingkey;
 
     public PrivateKey getSigningKey() {
+        if (signingkey != null) {
+            return signingkey;
+        }
         try {
-            return AuthenticationUtils.loadSigningKey(
-                    mastercardProperties.keystorePath(),
-                    mastercardProperties.keyAlias(),
-                    mastercardProperties.keystorePassword());
+            signingkey = AuthenticationUtils.loadSigningKey(
+                    mastercardProperties.getKeystorePath(),
+                    mastercardProperties.getKeyAlias(),
+                    mastercardProperties.getKeystorePassword());
+            return signingkey;
         } catch (Exception e) {
             throw new RuntimeException("Failed to load signing key", e);
         }

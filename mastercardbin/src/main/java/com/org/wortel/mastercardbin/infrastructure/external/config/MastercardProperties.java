@@ -1,12 +1,19 @@
 package com.org.wortel.mastercardbin.infrastructure.external.config;
 
-import io.smallrye.config.ConfigMapping;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.Getter;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@ConfigMapping(prefix = "mastercard")
-public interface MastercardProperties {
+@ApplicationScoped
+@Getter
+public class MastercardProperties {
 
-    String keystorePath();
-    String keystorePassword();
-    String keyAlias();
-    String consumerKey();
+    @ConfigProperty(name = "mastercard.keystore-path")
+    String keystorePath;
+    @ConfigProperty(name = "mastercard.keystore-password")
+    String keystorePassword;
+    @ConfigProperty(name = "mastercard.key-alias")
+    String keyAlias;
+    @ConfigProperty(name = "mastercard.consumer-key")
+    String consumerKey;
 }

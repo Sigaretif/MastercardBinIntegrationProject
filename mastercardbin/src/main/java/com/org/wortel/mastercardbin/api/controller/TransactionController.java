@@ -28,5 +28,6 @@ public class TransactionController {
         return Response.status(Response.Status.CREATED)
                 .entity(newTransactionMapper.toResponse(transaction))
                 .build();
+//        var response = mastercardBinDataService.getLookupBin();
     }
 }

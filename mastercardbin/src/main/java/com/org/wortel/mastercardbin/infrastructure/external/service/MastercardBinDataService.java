@@ -1,41 +1,32 @@
 package com.org.wortel.mastercardbin.infrastructure.external.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mastercard.developer.oauth.OAuth;
-import com.org.wortel.mastercardbin.infrastructure.external.config.MastercardProperties;
-import com.org.wortel.mastercardbin.infrastructure.external.model.MastercardBinDataRequest;
+import com.org.wortel.mastercardbin.infrastructure.external.api.client.MastercardClient;
+import com.org.wortel.mastercardbin.infrastructure.external.api.client.MastercardClientFactory;
+import com.org.wortel.mastercardbin.infrastructure.external.api.model.MastercardBinDataRequest;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.HttpMethod;
-import lombok.RequiredArgsConstructor;
-
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
-@RequiredArgsConstructor
 public class MastercardBinDataService {
 
-    private final MastercardProperties mastercardProperties;
-    private final MastercardSigningKeyProvider signingKeyProvider;
+    private final MastercardClient mastercardClient;
 
-    private String getAuthorizationHeader() {
-        ObjectMapper objectMapper = new ObjectMapper();
+    @Inject
+    public MastercardBinDataService(MastercardClientFactory mastercardClientFactory) {
+        this.mastercardClient = mastercardClientFactory.createClient();
+    }
+
+    public Response getLookupBin(String binNumber) {
+        var y = MastercardBinDataRequest.builder()
+                .accountRange(binNumber)
+                .build();
+        Response response;
         try {
-            return OAuth.getAuthorizationHeader(
-                    new URI("https://sandbox.api.mastercard.com"),
-                    HttpMethod.POST,
-                    objectMapper.writeValueAsString(
-                            MastercardBinDataRequest.builder()
-                                    .accountRange("522169")
-                                    .build()
-                    ),
-                    StandardCharsets.UTF_8,
-                    mastercardProperties.consumerKey(),
-                    signingKeyProvider.getSigningKey()
-                    );
+            response = mastercardClient.lookupBin(y);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get lookup bin", e);
         }
-        catch (Exception e) {
-            throw new RuntimeException("Failed to get authorization header", e);
-        }
+        return response;
     }
 }
