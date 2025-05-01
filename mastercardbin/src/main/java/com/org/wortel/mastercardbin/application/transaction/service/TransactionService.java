@@ -1,6 +1,7 @@
 package com.org.wortel.mastercardbin.application.transaction.service;
 
 import com.org.wortel.mastercardbin.application.errorhandling.transaction.TransactionNotFoundException;
+import com.org.wortel.mastercardbin.application.bindata.service.BinAccessAlertService;
 import com.org.wortel.mastercardbin.application.transaction.provider.TransactionMetadataProvider;
 import com.org.wortel.mastercardbin.domain.transaction.dto.BaseTransaction;
 import com.org.wortel.mastercardbin.domain.transaction.model.Transaction;
@@ -22,7 +23,6 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -33,9 +33,12 @@ public class TransactionService {
     private final TransactionMetadataRepository transactionMetadataRepository;
     private final TransactionMetadataProvider transactionMetadataProvider;
     private final TransactionEntityMapper transactionEntityMapper;
+    private final BinAccessAlertService binAccessAlertService;
 
     @Transactional
     public Transaction createTransaction(final BaseTransaction baseTransaction) {
+        binAccessAlertService.recordBinAccess(baseTransaction.getBinNumber());
+
         var transactionMetadata = transactionMetadataProvider.getTransactionMetadata(baseTransaction.getBinNumber());
 
         var transactionMetadataEntity = transactionMetadataRepository
