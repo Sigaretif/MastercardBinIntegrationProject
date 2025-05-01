@@ -6,7 +6,7 @@ import com.org.wortel.mastercardbin.application.errorhandling.mastercard.Masterc
 import com.org.wortel.mastercardbin.application.errorhandling.transaction.TransactionMetadataNotFoundException;
 import com.org.wortel.mastercardbin.domain.transaction.dto.TransactionMetadata;
 import com.org.wortel.mastercardbin.infrastructure.api.external.client.MastercardClient;
-import com.org.wortel.mastercardbin.infrastructure.api.external.client.MastercardClientFactory;
+import com.org.wortel.mastercardbin.infrastructure.api.external.client.util.MastercardClientFactory;
 import com.org.wortel.mastercardbin.infrastructure.api.external.dto.MastercardBinDataRequestDto;
 import com.org.wortel.mastercardbin.infrastructure.api.external.dto.mapper.MastercardBinDataDtoMapper;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,13 +19,10 @@ import java.util.List;
 public class MastercardBinDataService {
 
     private final MastercardClient mastercardClient;
-    private final MastercardBinDataDtoMapper mastercardBinDataDtoMapper;
 
     @Inject
-    public MastercardBinDataService(MastercardClientFactory mastercardClientFactory,
-                                    MastercardBinDataDtoMapper mastercardBinDataDtoMapper) {
+    public MastercardBinDataService(MastercardClientFactory mastercardClientFactory) {
         this.mastercardClient = mastercardClientFactory.createClient();
-        this.mastercardBinDataDtoMapper = mastercardBinDataDtoMapper;
     }
 
     public List<TransactionMetadata> getBinData(String binNumber) {
@@ -34,16 +31,16 @@ public class MastercardBinDataService {
                     .accountRange(binNumber)
                     .build());
             return metadataList.stream()
-                    .map(mastercardBinDataDtoMapper::toDomain)
+                    .map(MastercardBinDataDtoMapper::toDomain)
                     .toList();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (e instanceof ClientWebApplicationException clientException) {
                 switch (clientException.getResponse().getStatus()) {
                     case 401, 403 -> throw new MastercardAuthorizationException(
                             "Unauthorized access to Mastercard API", clientException.getMessage());
                     case 400 -> throw new MastercardBadRequestException(clientException.getMessage());
                     case 404 -> throw new TransactionMetadataNotFoundException();
+                    default -> {}
                 }
             }
             throw new MastercardProcessingException(e.getMessage());

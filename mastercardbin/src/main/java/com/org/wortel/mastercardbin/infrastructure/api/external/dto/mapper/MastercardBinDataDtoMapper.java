@@ -2,9 +2,9 @@ package com.org.wortel.mastercardbin.infrastructure.api.external.dto.mapper;
 
 import com.org.wortel.mastercardbin.domain.transaction.dto.TransactionMetadata;
 import com.org.wortel.mastercardbin.infrastructure.api.external.dto.MastercardBinDataResponseDto;
-import jakarta.enterprise.context.ApplicationScoped;
+import lombok.experimental.UtilityClass;
 
-@ApplicationScoped
+@UtilityClass
 public class MastercardBinDataDtoMapper {
 
     public TransactionMetadata toDomain(MastercardBinDataResponseDto response) {

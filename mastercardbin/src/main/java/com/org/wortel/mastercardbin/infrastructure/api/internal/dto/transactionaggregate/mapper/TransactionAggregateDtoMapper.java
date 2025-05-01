@@ -8,11 +8,11 @@ import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transactiona
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transactionaggregate.TransactionAggregateResponseDto;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transactionaggregate.valueobject.TransactionsPerCountryDto;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transactionaggregate.valueobject.TransactionsPerCustomerDto;
-import jakarta.enterprise.context.ApplicationScoped;
+import lombok.experimental.UtilityClass;
 
-@ApplicationScoped
+@UtilityClass
 public class TransactionAggregateDtoMapper {
-    // TODO change this and all possible mappers from beans to static methods
+
     public TransactionAggregateFilter toDomain(TransactionAggregateFilterRequestDto dto) {
         return TransactionAggregateFilter.builder()
                 .fromDate(dto.getFrom())
@@ -27,9 +27,9 @@ public class TransactionAggregateDtoMapper {
                 .averageTransactionsAmount(transactionAggregate.getAverageTransactionsAmount())
                 .mostFrequentCustomer(convertTransactionsPerCustomer(transactionAggregate.getMostFrequentCustomer()))
                 .countriesTransactionsSummary(transactionAggregate.getCountriesTransactionsSummary()
-                                .stream()
-                                .map(this::convertTransactionsPerCustomer)
-                                .toList())
+                        .stream()
+                        .map(TransactionAggregateDtoMapper::convertTransactionsPerCustomer)
+                        .toList())
                 .build();
     }
 

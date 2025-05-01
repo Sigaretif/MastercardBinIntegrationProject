@@ -1,6 +1,7 @@
-package com.org.wortel.mastercardbin.infrastructure.api.external.client;
+package com.org.wortel.mastercardbin.infrastructure.api.external.client.util;
 
 import com.org.wortel.mastercardbin.application.bindata.util.MastercardProperties;
+import com.org.wortel.mastercardbin.infrastructure.api.external.client.MastercardClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;

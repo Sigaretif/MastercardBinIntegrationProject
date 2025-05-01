@@ -14,18 +14,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransactionHelper {
 
-    private final NewTransactionDtoMapper newTransactionDtoMapper;
-    private final TransactionAggregateDtoMapper transactionAggregateDtoMapper;
     private final TransactionService transactionService;
 
     public NewTransactionResponseDto createTransaction(final NewTransactionRequestDto request) {
-        var transaction = transactionService.createTransaction(newTransactionDtoMapper.toDomain(request));
-        return newTransactionDtoMapper.toResponse(transaction);
+        var transaction = transactionService.createTransaction(NewTransactionDtoMapper.toDomain(request));
+        return NewTransactionDtoMapper.toResponse(transaction);
     }
 
     public TransactionAggregateResponseDto getAggregatedTransactionsData(final TransactionAggregateFilterRequestDto request) {
         var aggregatedTransactions = transactionService
-                .getAggregatedTransactionsData(transactionAggregateDtoMapper.toDomain(request));
-        return transactionAggregateDtoMapper.toResponse(aggregatedTransactions);
+                .getAggregatedTransactionsData(TransactionAggregateDtoMapper.toDomain(request));
+        return TransactionAggregateDtoMapper.toResponse(aggregatedTransactions);
     }
 }

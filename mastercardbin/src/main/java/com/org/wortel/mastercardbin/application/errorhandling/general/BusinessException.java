@@ -11,7 +11,7 @@ public class BusinessException extends RuntimeException{
     private final Response.Status status;
     private final String genericMessage;
 
-    public BusinessException(String message, String genericMessage, Response.Status status) {
+    protected BusinessException(String message, String genericMessage, Response.Status status) {
         super(message);
         this.status = status;
         this.genericMessage = genericMessage;

@@ -115,6 +115,6 @@ public class TransactionService {
                         .countryName(entry.getKey())
                         .transactionsAmount(entry.getValue())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 }

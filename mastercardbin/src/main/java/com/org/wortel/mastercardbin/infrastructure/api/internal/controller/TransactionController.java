@@ -3,6 +3,8 @@ package com.org.wortel.mastercardbin.infrastructure.api.internal.controller;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.newtransaction.NewTransactionRequestDto;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transactionaggregate.TransactionAggregateFilterRequestDto;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.helper.TransactionHelper;
+import com.org.wortel.mastercardbin.infrastructure.api.util.JwtTokenUtil;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.Consumes;
@@ -21,8 +23,10 @@ import lombok.RequiredArgsConstructor;
 public class TransactionController {
 
     private final TransactionHelper transactionHelper;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @POST
+    @RolesAllowed("USER")
     public Response createTransaction(@Valid NewTransactionRequestDto request) {
         var response = transactionHelper.createTransaction(request);
         return Response.status(Response.Status.CREATED)
@@ -32,10 +36,17 @@ public class TransactionController {
 
     @GET
     @Path("/aggregate")
+    @RolesAllowed("USER")
     public Response getTransactionAggregate(@BeanParam @Valid TransactionAggregateFilterRequestDto request) {
         transactionHelper.getAggregatedTransactionsData(request);
         return Response.status(Response.Status.OK)
                 .entity(transactionHelper.getAggregatedTransactionsData(request))
                 .build();
+    }
+
+    @GET
+    @Path("/token")
+    public String getToken() {
+        return jwtTokenUtil.generateJwtToken();
     }
 }

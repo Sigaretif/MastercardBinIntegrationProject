@@ -1,13 +1,13 @@
 package com.org.wortel.mastercardbin.infrastructure.api.internal.dto.newtransaction.mapper;
 
-import com.org.wortel.mastercardbin.domain.transaction.model.Transaction;
 import com.org.wortel.mastercardbin.domain.transaction.dto.BaseTransaction;
+import com.org.wortel.mastercardbin.domain.transaction.model.Transaction;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.newtransaction.NewTransactionRequestDto;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.newtransaction.NewTransactionResponseDto;
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.newtransaction.valueobject.NewTransactionMetadataDto;
-import jakarta.enterprise.context.ApplicationScoped;
+import lombok.experimental.UtilityClass;
 
-@ApplicationScoped
+@UtilityClass
 public class NewTransactionDtoMapper {
 
     public BaseTransaction toDomain(NewTransactionRequestDto dto) {
