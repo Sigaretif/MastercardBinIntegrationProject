@@ -13,6 +13,6 @@ import java.util.List;
 public class TransactionAggregate {
 
     private List<TransactionsPerCountry> countriesTransactionsSummary;
-    private TransactionsPerCustomer mostFrequentCustomer;
+    private List<TransactionsPerCustomer> mostFrequentCustomers;
     private BigDecimal averageTransactionsAmount;
 }

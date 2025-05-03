@@ -1,7 +1,6 @@
 package com.org.wortel.mastercardbin.application.transaction.service;
 
 import com.org.wortel.mastercardbin.application.errorhandling.transaction.TransactionNotFoundException;
-import com.org.wortel.mastercardbin.application.bindata.service.BinAccessAlertService;
 import com.org.wortel.mastercardbin.application.transaction.provider.TransactionMetadataProvider;
 import com.org.wortel.mastercardbin.domain.transaction.dto.BaseTransaction;
 import com.org.wortel.mastercardbin.domain.transaction.model.Transaction;
@@ -67,7 +66,8 @@ public class TransactionService {
     }
 
     public TransactionAggregate getAggregatedTransactionsData(final TransactionAggregateFilter filter) {
-        var transactions = transactionRepository.findByDatesAndCountryAndBinPrefix(
+        List<TransactionEntity> trans = transactionRepository.listAll();
+        var transactions = transactionRepository.findByDatesAndLocationAndBinPrefix(
                         filter.getFromDate(), filter.getToDate(), filter.getLocation(), filter.getBinPrefix())
                 .stream()
                 .map(transactionEntityMapper::toDomain)
@@ -79,7 +79,7 @@ public class TransactionService {
 
         return TransactionAggregate.builder()
                 .averageTransactionsAmount(getTransactionsAverageAmount(transactions))
-                .mostFrequentCustomer(getMostFrequentCustomer(transactions))
+                .mostFrequentCustomers(getMostFrequentCustomer(transactions))
                 .countriesTransactionsSummary(getCountriesTransactionsSummary(transactions))
                 .build();
     }
@@ -91,20 +91,24 @@ public class TransactionService {
                 .divide(BigDecimal.valueOf(transactions.size()), 2, RoundingMode.HALF_UP);
     }
 
-    private TransactionsPerCustomer getMostFrequentCustomer(List<Transaction> transactions) {
+    private List<TransactionsPerCustomer> getMostFrequentCustomer(List<Transaction> transactions) {
         Map<String, Long> transactionsPerCustomer = transactions.stream()
                 .map(Transaction::getCustomerName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(customer -> customer, Collectors.counting()));
 
+        int mostOccurencesAmount = transactionsPerCustomer.values().stream()
+                .mapToInt(Long::intValue)
+                .max()
+                .orElse(0);
+
         return transactionsPerCustomer.entrySet().stream()
-                // TODO Currently it returns first occurence of max, but there can be "multiple maxes"
-                .max(Map.Entry.comparingByValue())
+                .filter(entry -> entry.getValue() == mostOccurencesAmount)
                 .map(entry -> TransactionsPerCustomer.builder()
                         .customerName(entry.getKey())
                         .transactionsAmount(entry.getValue())
                         .build())
-                .orElse(null);
+                .toList();
     }
 
     private List<TransactionsPerCountry> getCountriesTransactionsSummary(List<Transaction> transactions) {

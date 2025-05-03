@@ -25,10 +25,13 @@ public class TransactionAggregateDtoMapper {
     public TransactionAggregateResponseDto toResponse(TransactionAggregate transactionAggregate) {
         return TransactionAggregateResponseDto.builder()
                 .averageTransactionsAmount(transactionAggregate.getAverageTransactionsAmount())
-                .mostFrequentCustomer(convertTransactionsPerCustomer(transactionAggregate.getMostFrequentCustomer()))
-                .countriesTransactionsSummary(transactionAggregate.getCountriesTransactionsSummary()
+                .mostFrequentCustomers(transactionAggregate.getMostFrequentCustomers()
                         .stream()
                         .map(TransactionAggregateDtoMapper::convertTransactionsPerCustomer)
+                        .toList())
+                .countriesTransactionsSummary(transactionAggregate.getCountriesTransactionsSummary()
+                        .stream()
+                        .map(TransactionAggregateDtoMapper::convertTransactionsPerCountry)
                         .toList())
                 .build();
     }
@@ -40,7 +43,7 @@ public class TransactionAggregateDtoMapper {
                 .build();
     }
 
-    private TransactionsPerCountryDto convertTransactionsPerCustomer(TransactionsPerCountry transactionsPerCountry) {
+    private TransactionsPerCountryDto convertTransactionsPerCountry(TransactionsPerCountry transactionsPerCountry) {
         return TransactionsPerCountryDto.builder()
                 .countryName(transactionsPerCountry.getCountryName())
                 .transactionsAmount(transactionsPerCountry.getTransactionsAmount())

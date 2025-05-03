@@ -1,4 +1,4 @@
-package com.org.wortel.mastercardbin.application.errorhandling.mastercard;
+package com.org.wortel.mastercardbin.application.errorhandling.transaction;
 
 import com.org.wortel.mastercardbin.application.errorhandling.general.BusinessException;
 import jakarta.ws.rs.core.Response;

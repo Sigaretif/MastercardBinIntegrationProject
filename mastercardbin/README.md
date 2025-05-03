@@ -1,66 +1,42 @@
-# mastercardbin
+## Mastercard Bin App
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This QUARKUS application processes and enriches transaction data using the Mastercard BIN Lookup API, stores it for
+analysis, and provides REST endpoints with built-in alerting, caching, and filtering capabilities.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+### App features:
 
-## Running the application in dev mode
+- An endpoint for storing a new transaction enriched with metadata retrieved from the Mastercard BIN Lookup API.
 
-You can run your application in dev mode that enables live coding using:
+- An endpoint that returns aggregated analytical insights about transactions, with support for filtering by specific
+  criteria.
 
-```shell script
-./mvnw quarkus:dev
-```
+- Caching of Mastercard API responses using Caffeine to improve performance and reduce external calls.
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+- Propagation of a request ID header to facilitate log traceability across the system.
 
-## Packaging and running the application
+- Security implemented using JWT authentication to protect all endpoints.
 
-The application can be packaged using:
+- An alerting system that notifies when a specific BIN number is accessed unusually frequently within a short period.
 
-```shell script
-./mvnw package
-```
+### Runing the app:
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+To correctly run the application you need to create mastercard account and bin lookup api project. Follow the
+instructions [HERE](https://developer.mastercard.com/bin-lookup/documentation/quick-start-guide/)
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+After creating the project, you will need to set up the environment variables in the `.env.sample` file.
+Fill in required mastercard variables. Additionally provide database connection credentials. Currently application uses
+postgresql database, so if you don't want to change properties, you need to provide postgresql database connection
+credentials.
+After that just change name of the file to `.env` and run the application.
 
-If you want to build an _über-jar_, execute the following command:
+#### Additional configuation
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+The application uses an alerting system to detect unusually frequent access to a specific BIN number. The alerting
+feature operates in two modes. The first mode logs a warning message when a defined threshold is exceeded. The second
+mode completely blocks further requests once the threshold is reached. To configure this feature, as well as other
+application settings, you need to adjust the corresponding values in the `application.properties`.
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### Endpoints:
 
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/mastercardbin-1.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- RESTEasy Classic ([guide](https://quarkus.io/guides/resteasy)): REST endpoint framework implementing Jakarta REST and more
-
-## Provided Code
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+The application uses test data from the Mastercard BIN Lookup API. In order to create a new transaction, you must use
+BIN numbers available at the following [LINK](https://developer.mastercard.com/bin-lookup/documentation/testing/)

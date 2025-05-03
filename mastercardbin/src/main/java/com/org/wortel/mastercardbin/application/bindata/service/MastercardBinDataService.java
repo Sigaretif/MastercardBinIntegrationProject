@@ -3,7 +3,7 @@ package com.org.wortel.mastercardbin.application.bindata.service;
 import com.org.wortel.mastercardbin.application.errorhandling.mastercard.MastercardAuthorizationException;
 import com.org.wortel.mastercardbin.application.errorhandling.mastercard.MastercardBadRequestException;
 import com.org.wortel.mastercardbin.application.errorhandling.mastercard.MastercardProcessingException;
-import com.org.wortel.mastercardbin.application.errorhandling.transaction.TransactionMetadataNotFoundException;
+import com.org.wortel.mastercardbin.application.errorhandling.mastercard.MastercardBinDataNotFoundException;
 import com.org.wortel.mastercardbin.domain.transaction.dto.TransactionMetadata;
 import com.org.wortel.mastercardbin.infrastructure.api.external.client.MastercardClient;
 import com.org.wortel.mastercardbin.infrastructure.api.external.client.util.MastercardClientFactory;
@@ -39,7 +39,7 @@ public class MastercardBinDataService {
                     case 401, 403 -> throw new MastercardAuthorizationException(
                             "Unauthorized access to Mastercard API", clientException.getMessage());
                     case 400 -> throw new MastercardBadRequestException(clientException.getMessage());
-                    case 404 -> throw new TransactionMetadataNotFoundException();
+                    case 404 -> throw new MastercardBinDataNotFoundException();
                     default -> {}
                 }
             }

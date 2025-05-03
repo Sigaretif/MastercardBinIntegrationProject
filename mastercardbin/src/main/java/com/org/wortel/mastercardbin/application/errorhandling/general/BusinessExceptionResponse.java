@@ -2,9 +2,11 @@ package com.org.wortel.mastercardbin.application.errorhandling.general;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class BusinessExceptionResponse {
 
     private String status;

@@ -17,8 +17,8 @@ import java.util.List;
 @ApplicationScoped
 public class TransactionRepository implements PanacheRepository<TransactionEntity> {
 
-    public List<TransactionEntity> findByDatesAndCountryAndBinPrefix(LocalDateTime from, LocalDateTime to,
-                                                                     String country, String binPrefix) {
+    public List<TransactionEntity> findByDatesAndLocationAndBinPrefix(LocalDateTime from, LocalDateTime to,
+                                                                      String location, String binPrefix) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<TransactionEntity> criteriaQuery = criteriaBuilder.createQuery(TransactionEntity.class);
         Root<TransactionEntity> transactionRoot = criteriaQuery.from(TransactionEntity.class);
@@ -31,8 +31,8 @@ public class TransactionRepository implements PanacheRepository<TransactionEntit
         if (ObjectUtils.isNotEmpty(to)) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(transactionRoot.get("timestamp"), to));
         }
-        if (StringUtils.isNotEmpty(country)) {
-            predicates.add(criteriaBuilder.equal(transactionRoot.get("location"), country));
+        if (StringUtils.isNotEmpty(location)) {
+            predicates.add(criteriaBuilder.equal(transactionRoot.get("location"), location));
         }
         if (StringUtils.isNotEmpty(binPrefix)) {
             predicates.add(criteriaBuilder.like(transactionRoot.get("binNumber"), binPrefix + "%"));

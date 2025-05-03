@@ -2,7 +2,7 @@ package com.org.wortel.mastercardbin.application.transaction.provider;
 
 import com.org.wortel.mastercardbin.application.bindata.service.MastercardBinDataService;
 import com.org.wortel.mastercardbin.application.errorhandling.transaction.NonUniqueTransactionMetadataException;
-import com.org.wortel.mastercardbin.application.errorhandling.transaction.TransactionMetadataNotFoundException;
+import com.org.wortel.mastercardbin.application.errorhandling.mastercard.MastercardBinDataNotFoundException;
 import com.org.wortel.mastercardbin.domain.transaction.dto.TransactionMetadata;
 import io.quarkus.cache.CacheResult;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,7 +14,7 @@ public class TransactionMetadataProvider {
 
     private final MastercardBinDataService mastercardBinDataService;
 
-    @CacheResult(cacheName = "bin-details-cache")
+    @CacheResult(cacheName = "transaction-metadata-cache")
     public TransactionMetadata getTransactionMetadata(String binNumber) {
         var metadataList = mastercardBinDataService.getBinData(binNumber);
         return metadataList.stream()
@@ -22,6 +22,6 @@ public class TransactionMetadataProvider {
                 .reduce((a, b) -> {
                     throw new NonUniqueTransactionMetadataException();
                 })
-                .orElseThrow(() -> new TransactionMetadataNotFoundException());
+                .orElseThrow(MastercardBinDataNotFoundException::new);
     }
 }

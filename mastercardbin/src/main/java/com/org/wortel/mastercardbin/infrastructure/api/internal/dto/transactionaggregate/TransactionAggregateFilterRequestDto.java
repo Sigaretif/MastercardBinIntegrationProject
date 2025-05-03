@@ -2,7 +2,6 @@ package com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transaction
 
 import com.org.wortel.mastercardbin.infrastructure.api.internal.dto.transactionaggregate.util.DateBefore;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import jakarta.ws.rs.QueryParam;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +20,6 @@ public class TransactionAggregateFilterRequestDto {
     private LocalDateTime to;
 
     @QueryParam("location")
-    @Size(min = 1, message = "Location must not be empty")
     private String location;
 
     @QueryParam("binPrefix")

@@ -1,8 +1,8 @@
-package com.org.wortel.mastercardbin.application.bindata.service;
+package com.org.wortel.mastercardbin.application.transaction.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.org.wortel.mastercardbin.application.errorhandling.mastercard.BinAccessRateLimitExceedException;
+import com.org.wortel.mastercardbin.application.errorhandling.transaction.BinAccessRateLimitExceedException;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -37,7 +37,7 @@ public class BinAccessAlertService {
         var counter = binAccessCache.get(binNumber, ignored -> new AtomicInteger(0));
         int accessCount = counter.incrementAndGet();
 
-        if (accessCount >= countThreshold) {
+        if (accessCount > countThreshold) {
             processCountThresholdAction(binNumber);
         }
     }
