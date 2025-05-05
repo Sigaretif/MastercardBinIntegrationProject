@@ -66,7 +66,6 @@ public class TransactionService {
     }
 
     public TransactionAggregate getAggregatedTransactionsData(final TransactionAggregateFilter filter) {
-        List<TransactionEntity> trans = transactionRepository.listAll();
         var transactions = transactionRepository.findByDatesAndLocationAndBinPrefix(
                         filter.getFromDate(), filter.getToDate(), filter.getLocation(), filter.getBinPrefix())
                 .stream()
@@ -97,13 +96,13 @@ public class TransactionService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(customer -> customer, Collectors.counting()));
 
-        int mostOccurencesAmount = transactionsPerCustomer.values().stream()
+        int mostOccurrencesAmount = transactionsPerCustomer.values().stream()
                 .mapToInt(Long::intValue)
                 .max()
                 .orElse(0);
 
         return transactionsPerCustomer.entrySet().stream()
-                .filter(entry -> entry.getValue() == mostOccurencesAmount)
+                .filter(entry -> entry.getValue() == mostOccurrencesAmount)
                 .map(entry -> TransactionsPerCustomer.builder()
                         .customerName(entry.getKey())
                         .transactionsAmount(entry.getValue())
