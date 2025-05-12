@@ -36,9 +36,9 @@ public class TransactionController {
     @Path("/aggregate")
     @RolesAllowed("USER")
     public Response getTransactionAggregate(@BeanParam @Valid TransactionAggregateFilterRequestDto request) {
-        transactionHelper.getAggregatedTransactionsData(request);
+        var response = transactionHelper.getAggregatedTransactionsData(request);
         return Response.status(Response.Status.OK)
-                .entity(transactionHelper.getAggregatedTransactionsData(request))
+                .entity(response)
                 .build();
     }
 }
